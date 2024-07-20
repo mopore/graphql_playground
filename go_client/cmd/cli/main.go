@@ -8,6 +8,12 @@ import (
     "github.com/machinebox/graphql"
 )
 
+type Book struct {
+    Title  string `json:"title"`
+    Author string `json:"author"`
+}
+
+
 func main() {
     client := graphql.NewClient("http://localhost:4000/graphql")
 
@@ -21,10 +27,7 @@ func main() {
     `)
 
     var respDate struct {
-        Books []struct {
-            Title  string `json:"title"`
-            Author string `json:"author"`
-        } `json:"books"`
+        Books []Book `json:"books"`
     }
 
     if err := client.Run(context.Background(), req, &respDate); err != nil {
