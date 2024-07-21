@@ -9,17 +9,16 @@ import (
 )
 
 type Book struct {
+    ID    string `json:"id"`
     Title  string `json:"title"`
     Author string `json:"author"`
 }
 
-
-func main() {
-    client := graphql.NewClient("http://localhost:4000/graphql")
-
+func queryBooks(client *graphql.Client) {
     req := graphql.NewRequest(`
         query GetBooks {
           books {
+            id
             title
             author
           }
@@ -36,6 +35,12 @@ func main() {
 
     fmt.Println("Books:")
     for _, book := range respDate.Books {
-        fmt.Printf("Title: %s, Author: %s\n", book.Title, book.Author)
+        fmt.Printf("%s, Title: %s, Author: %s\n", book.ID, book.Title, book.Author)
     }
+}
+
+
+func main() {
+    client := graphql.NewClient("http://localhost:4000/graphql")
+    queryBooks(client)
 }
