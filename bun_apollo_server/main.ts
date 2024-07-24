@@ -1,23 +1,26 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 
-const schemaDef = `#graphql
-    # Just a comment
-    
-    type Book {
-        id: ID!
-        title: String!
-        author: String!
-    }
+const file = Bun.file("./schema.graphql")
 
-    type Query {
-        books: [Book]
-    }
-
-    type Mutation {
-        addBook(title: String!, author: String!): [Book]
-    }
-`;
+const schemaDef = await file.text();
+// const schemaDef = `#graphql
+//     # Just a comment
+//     
+//     type Book {
+//         id: ID!
+//         title: String!
+//         author: String!
+//     }
+//
+//     type Query {
+//         books: [Book]
+//     }
+//
+//     type Mutation {
+//         addBook(title: String!, author: String!): [Book]
+//     }
+// `;
 
 interface Book {
     id: string;
@@ -70,3 +73,4 @@ const { url } = await startStandaloneServer(
 );
 
 console.log(`🚀 Server ready at ${url}`);
+
