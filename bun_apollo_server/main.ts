@@ -1,76 +1,39 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import { addBook, queryBooks } from "./bookresolvers";
 
-const file = Bun.file("./schema.graphql")
 
-const schemaDef = await file.text();
-// const schemaDef = `#graphql
-//     # Just a comment
-//     
-//     type Book {
-//         id: ID!
-//         title: String!
-//         author: String!
-//     }
-//
-//     type Query {
-//         books: [Book]
-//     }
-//
-//     type Mutation {
-//         addBook(title: String!, author: String!): [Book]
-//     }
-// `;
+const SCHEMA_DEF_PATH = "./schema.graphql" as const;
 
-interface Book {
-    id: string;
-    title: string;
-    author: string;
+
+const mainAsync = async () => {
+    const schemaDef = await Bun.file(SCHEMA_DEF_PATH).text();
+
+    const resolvers = {
+        Query: {
+            books: queryBooks,
+        },
+        Mutation: {
+            addBook: addBook,        
+        }
+    };
+
+    const server = new ApolloServer({ 
+        typeDefs: schemaDef, 
+        resolvers 
+    });
+
+    const { url } = await startStandaloneServer(
+        server, 
+        {
+            listen: { 
+                port: 4000
+            } 
+        }
+    );
+
+    console.log(`🚀 Server ready at ${url}`);
 }
 
-
-const books: Book[] = [
-    {
-        id: "1",
-        title: "The Awakening",
-        author: "Kate Chopin",
-    },
-    {
-        id: "2",
-        title: "City of Glass",
-        author: "Paul Auster",
-    },
-];
-
-const resolvers = {
-    Query: {
-        books: (): Book[] => books,
-    },
-    Mutation: {
-        addBook: (_: any, args: any): Book[] => {
-            const newBook = {
-                id: String(books.length + 1),
-                title: args.title,
-                author: args.author,
-                }
-            books.push(newBook);
-            console.log(`Added book: ${newBook.title} by ${newBook.author}`);
-            console.log(`New length: ${books.length}`);
-            return books;
-        }
-    }
-};
-
-const server = new ApolloServer({ typeDefs: schemaDef, resolvers });
-
-const { url } = await startStandaloneServer(
-    server, 
-    {
-        listen: { 
-            port: 4000
-        } 
-    }
-);
-
-console.log(`🚀 Server ready at ${url}`);
+await mainAsync();
 
