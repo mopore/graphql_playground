@@ -1,16 +1,16 @@
 #graphql
-    # Just a comment
-    
-    type Book {
-        id: ID!
-        title: String!
-        author: String!
-    }
 
-    type Query {
-        books: [Book]
-    }
+# Just a comment
+type Book {
+    id: ID!
+    title: String!
+    author: String!
+}
 
-    type Mutation {
-        addBook(title: String!, author: String!): [Book]
-    }
+type Query {
+    books: [Book]
+}
+
+type Mutation {
+    addBook(title: String!, author: String!): [Book]
+}
