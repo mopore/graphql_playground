@@ -1,4 +1,4 @@
-import type { Book } from "./types";
+import type { Book, BookInput } from "./types";
 
 const books: Book[] = [
     {
@@ -16,13 +16,16 @@ const books: Book[] = [
 export const queryBooks = (): Book[] => books;
 
 export const addBook = (_: any, args: any): Book[] => {
+
+    const bookInput = args.bookInput as BookInput;
+
     const newBook = {
         id: String(books.length + 1),
-        title: args.title,
-        author: args.author,
+        title: bookInput.title,
+        author: bookInput.author,
     }
     books.push(newBook);
-    console.log(`Added book: ${newBook.title} by ${newBook.author}`);
+    console.log(`Added book w/ bookInput: ${newBook.title} by ${newBook.author}`);
     console.log(`New length: ${books.length}`);
     return books;
 }

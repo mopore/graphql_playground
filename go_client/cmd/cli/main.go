@@ -14,6 +14,11 @@ type Book struct {
 	Author string `json:"author"`
 }
 
+type BookInput struct {
+	Title  string `json:"title"`
+	Author string `json:"author"`
+}
+
 func queryBooks(client *graphql.Client) []Book {
 	req := graphql.NewRequest(`
         query GetBooks {
@@ -38,16 +43,20 @@ func queryBooks(client *graphql.Client) []Book {
 
 func addBook(client *graphql.Client) []Book {
 	req := graphql.NewRequest(`
-        mutation AddBook($title: String!, $author: String!) {
-            addBook(title: $title, author: $author) {
+        mutation AddBook($bookInput: BookInput!) {
+            addBook(bookInput: $bookInput) {
                 id
                 title
                 author
             }
         }
     `)
-	req.Var("title", "The Art of Computer Programming")
-	req.Var("author", "Donald E. Knuth")
+	bookInput := BookInput{
+		Title:  "The Art of Computer Programming",
+		Author: "Donald Knuth",
+	}
+
+	req.Var("bookInput",bookInput)
 
 	var respData struct {
 		Books []Book `json:"addBook"`
